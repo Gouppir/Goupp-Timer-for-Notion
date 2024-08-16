@@ -48,7 +48,7 @@
         }
 
         #logo {
-            width: 40%; /* تنظیم عرض لوگو به ۲۰٪ */
+            width: 20%; /* تنظیم عرض لوگو به ۲۰٪ */
             height: auto; /* حفظ نسبت تصویر */
             max-width: 100px; /* اطمینان از اینکه لوگو خیلی بزرگ نشود */
         }
@@ -101,4 +101,12 @@
     }
 
     function formatTime(seconds) {
-        const h = Math.floor(seconds​⬤
+        const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+        const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${h}:${m}:${s}`;
+    }
+</script>
+
+</body>
+</html>
