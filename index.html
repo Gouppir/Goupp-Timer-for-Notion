@@ -64,9 +64,9 @@
 
 <div id="timer">00:00:00</div>
 <div>
-    <button onclick="startTimer()">Start</button>
-    <button onclick="stopTimer()">Stop</button>
-    <button onclick="resetTimer()">Reset</button>
+    <button id="startButton">Start</button>
+    <button id="stopButton">Stop</button>
+    <button id="resetButton">Reset</button>
 </div>
 
 <div id="logo-container">
@@ -75,37 +75,43 @@
 </div>
 
 <script>
-    let timerInterval;
-    let time = 0;
-    let isRunning = false;
+    document.addEventListener('DOMContentLoaded', (event) => {
+        let timerInterval;
+        let time = 0;
+        let isRunning = false;
 
-    function startTimer() {
-        if (!isRunning) {
-            isRunning = true;
-            timerInterval = setInterval(() => {
-                time++;
-                document.getElementById('timer').textContent = formatTime(time);
-            }, 1000);
+        document.getElementById('startButton').addEventListener('click', startTimer);
+        document.getElementById('stopButton').addEventListener('click', stopTimer);
+        document.getElementById('resetButton').addEventListener('click', resetTimer);
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timerInterval = setInterval(() => {
+                    time++;
+                    document.getElementById('timer').textContent = formatTime(time);
+                }, 1000);
+            }
         }
-    }
 
-    function stopTimer() {
-        isRunning = false;
-        clearInterval(timerInterval);
-    }
+        function stopTimer() {
+            isRunning = false;
+            clearInterval(timerInterval);
+        }
 
-    function resetTimer() {
-        stopTimer();
-        time = 0;
-        document.getElementById('timer').textContent = "00:00:00";
-    }
+        function resetTimer() {
+            stopTimer();
+            time = 0;
+            document.getElementById('timer').textContent = "00:00:00";
+        }
 
-    function formatTime(seconds) {
-        const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
-        const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
-        const s = (seconds % 60).toString().padStart(2, '0');
-        return `${h}:${m}:${s}`;
-    }
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+            const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${h}:${m}:${s}`;
+        }
+    });
 </script>
 
 </body>
