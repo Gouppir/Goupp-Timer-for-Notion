@@ -1,76 +1,119 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ویجت تاریخ شمسی</title>
+    <title>Timer Widget by goupp.ir</title>
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             color: #555;
-            direction: rtl;
+            transform: scale(0.7); /* کاهش سایز کلی ویجت */
+            transform-origin: top left; /* تنظیم نقطه مرجع برای مقیاس */
         }
 
-        .date-widget {
-            background-color: #ffffff;
-            border: 2px solid #ff6600; /* رنگ نارنجی */
-            border-radius: 10px;
-            padding: 20px;
+        #timer {
+            font-size: 36px; /* کاهش سایز فونت تایمر */
+            color: #333;
+        }
+
+        button {
+            margin: 5px 2px; /* کاهش فاصله دکمه‌ها */
+            font-size: 14px; /* کاهش سایز فونت دکمه‌ها */
+            padding: 5px 10px; /* کاهش اندازه دکمه‌ها */
+            cursor: pointer;
+            border: none;
+            background-color: #ff6600; /* رنگ نارنجی */
+            color: white;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #e65c00; /* رنگ نارنجی تیره‌تر */
+        }
+
+        button:active {
+            background-color: #cc5200; /* رنگ نارنجی بیشتر تیره */
+        }
+
+        #logo-container {
+            margin-top: 10px; /* کاهش فاصله لوگو از تایمر */
             text-align: center;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            width: 300px;
         }
 
-        .date-widget h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #ff6600; /* رنگ نارنجی */
+        #logo {
+            width: 15%; /* تنظیم عرض لوگو به ۱۵٪ */
+            height: auto; /* حفظ نسبت تصویر */
+            max-width: 50px; /* اطمینان از اینکه لوگو خیلی بزرگ نشود */
         }
 
-        .date-widget p {
-            margin: 5px 0 0 0;
-            font-size: 18px;
-            color: #333; /* رنگ طوسی تیره */
+        #logo-text {
+            font-size: 10px; /* کاهش سایز فونت متن زیر لوگو */
+            color: #555; /* رنگ طوسی */
+            margin-top: 3px;
         }
     </style>
 </head>
 <body>
 
-<div class="date-widget">
-    <h1 id="weekday">چند شنبه</h1>
-    <p id="shamsi-date">روز ماه</p>
+<div id="timer">00:00:00</div>
+<div>
+    <button id="startButton">Start</button>
+    <button id="stopButton">Stop</button>
+    <button id="resetButton">Reset</button>
 </div>
 
-<!-- بارگذاری کتابخانه Jalaali -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jalaali-js/1.1.0/jalaali.min.js"></script>
+<div id="logo-container">
+    <img id="logo" src="https://raw.githubusercontent.com/gouppir/timerfornotion/main/goupp.png" alt="goupp logo">
+    <div id="logo-text">goupp.ir</div>
+</div>
 
 <script>
-    // گرفتن تاریخ میلادی
-    const today = new Date();
-    
-    // تبدیل تاریخ میلادی به شمسی با استفاده از jalaali.js
-    const jalaaliDate = jalaali.toJalaali(today);
+    document.addEventListener('DOMContentLoaded', (event) => {
+        let timerInterval;
+        let time = 0;
+        let isRunning = false;
 
-    // آرایه‌های نام روزهای هفته و ماه‌های شمسی
-    const weekdays = ["یک‌شنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه", "شنبه"];
-    const months = [
-        "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
-        "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
-    ];
+        document.getElementById('startButton').addEventListener('click', startTimer);
+        document.getElementById('stopButton').addEventListener('click', stopTimer);
+        document.getElementById('resetButton').addEventListener('click', resetTimer);
 
-    // استخراج نام روز هفته و تاریخ شمسی
-    const weekday = weekdays[today.getDay()];
-    const shamsiDate = `${jalaaliDate.jd} ${months[jalaaliDate.jm - 1]} ${jalaaliDate.jy}`;
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timerInterval = setInterval(() => {
+                    time++;
+                    document.getElementById('timer').textContent = formatTime(time);
+                }, 1000);
+            }
+        }
 
-    // نمایش تاریخ و روز هفته
-    document.getElementById('weekday').textContent = weekday;
-    document.getElementById('shamsi-date').textContent = shamsiDate;
+        function stopTimer() {
+            isRunning = false;
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            stopTimer();
+            time = 0;
+            document.getElementById('timer').textContent = "00:00:00";
+        }
+
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+            const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${h}:${m}:${s}`;
+        }
+    });
 </script>
 
 </body>
